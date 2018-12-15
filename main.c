@@ -1,11 +1,25 @@
 #include "efi.h"
 
+#define FALSE   (0)
+#define TRUE    (1)
+
 static CHAR16 kNewLine[] = L"\r\n";
 
 EFI_STATUS EFIAPI
 EfiMain(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *st) {
-  st->ConOut->OutputString(st->ConOut, L"Hello World!\r\n");
+  EFI_STATUS status;
+  status = st->ConOut->OutputString(st->ConOut, L"Hello World!\r\n");
+  if (EFI_ERROR(status))
+    return status;
+
+  status = st->ConIn->Reset(st->ConIn, FALSE);
+  if (EFI_ERROR(status))
+    return status;
+
   while(1) {
+    UINTN waitidx;
+    st->BootServices->WaitForEvent(1, &(st->ConIn->WaitForKey), &waitidx);
+
     struct EFI_INPUT_KEY key;
     st->ConIn->ReadKeyStroke(st->ConIn, &key);
     switch (key.UnicodeChar) {
