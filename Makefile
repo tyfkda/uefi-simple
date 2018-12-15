@@ -14,7 +14,7 @@ all: $(IMAGE_DIR)/EFI/BOOT/BOOTX64.EFI
 	$(CC) $(CFLAGS) $< -o $@
 
 qemu: OVMF.fd $(IMAGE_DIR)/EFI/BOOT/BOOTX64.EFI
-	qemu-system-x86_64 -nographic -bios OVMF.fd -hda fat:rw:$(IMAGE_DIR)
+	qemu-system-x86_64 -nographic -bios OVMF.fd -drive file=fat:rw:$(IMAGE_DIR),media=disk,format=raw
 
 $(IMAGE_DIR)/EFI/BOOT/BOOTX64.EFI: main.efi
 	mkdir -p $(IMAGE_DIR)/EFI/BOOT
